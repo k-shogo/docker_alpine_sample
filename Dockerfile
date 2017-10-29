@@ -5,16 +5,16 @@ RUN apk update && apk --update --no-cache add bash ruby \
     mariadb-client-libs tzdata \
     nodejs
 
+WORKDIR /app
+
 ADD Gemfile /app/
 ADD Gemfile.lock /app/
 
 RUN apk --update --no-cache add --virtual build-dependencies ruby-dev build-base \
     mariadb-dev libffi-dev && \
-    cd /app ; bundle install -j 4 && \
+    bundle install -j 4 && \
     apk del build-dependencies
 
 ADD . /app
-
-WORKDIR /app
 
 CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0", "-p", "3000"]
